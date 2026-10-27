@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" role="img" aria-label="A rectangular silver mirror on a speckled pink wall">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe3df"/>
+      <stop offset="1" stop-color="#e2d2ce"/>
+    </linearGradient>
+    <pattern id="speckle" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="7" cy="9" r="1.4" fill="#c7a19c"/>
+      <circle cx="29" cy="20" r="1" fill="#bf9893"/>
+      <circle cx="16" cy="34" r="1.2" fill="#cfaba6"/>
+      <circle cx="40" cy="40" r=".8" fill="#b88f8a"/>
+      <circle cx="37" cy="5" r=".9" fill="#c9a6a1"/>
+    </pattern>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3f5f7"/>
+      <stop offset=".35" stop-color="#9ea7b1"/>
+      <stop offset=".6" stop-color="#e6eaee"/>
+      <stop offset="1" stop-color="#6f7984"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e3eaf0"/>
+      <stop offset=".55" stop-color="#bfcbd6"/>
+      <stop offset="1" stop-color="#a9b7c4"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity=".75"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <clipPath id="glass-clip">
+      <rect x="304" y="94" width="192" height="292"/>
+    </clipPath>
+  </defs>
+
+  <rect width="800" height="560" fill="url(#wall)"/>
+  <rect width="800" height="560" fill="url(#speckle)"/>
+
+  <rect x="296" y="98" width="224" height="324" fill="#6b4e4a" opacity=".28" filter="url(#shadow)"/>
+  <rect x="288" y="78" width="224" height="324" rx="3" fill="url(#frame)"/>
+  <rect x="304" y="94" width="192" height="292" fill="url(#glass)"/>
+  <g clip-path="url(#glass-clip)">
+    <rect x="250" y="40" width="46" height="420" fill="url(#sheen)" transform="rotate(24 400 240)"/>
+    <rect x="320" y="40" width="16" height="420" fill="url(#sheen)" transform="rotate(24 400 240)"/>
+  </g>
+</svg>

@@ -1,0 +1,658 @@
+/* ==========================================================================
+   Scrollytelling — poem close reading
+   ========================================================================== */
+
+:root {
+  --paper: #f7f7f4;
+  --paper-raised: #ffffff;
+  --ink: #15181c;
+  --ink-soft: #3c424a;
+  --ink-dim: #c6cacf;
+  --muted: #6d737b;
+  --rule: #e1e3e6;
+  --accent: #2c5d7f;
+  --highlight: #d2e2ed;
+  --silver-dark: #5d6671;
+  --silver-mid: #9ea8b3;
+  --silver-bright: #e4e9ee;
+
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --sans: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.fx-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 16px 7rem;
+  text-align: center;
+  overflow: hidden;
+  background: radial-gradient(ellipse 70% 55% at 50% 42%, #ffffff 0%, var(--paper) 70%);
+}
+
+.eyebrow {
+  margin: 0 0 1.75rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero-mark {
+  font-size: clamp(4.5rem, 17vw, 11rem);
+  font-weight: 300;
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+}
+
+.hero-title {
+  margin: 0;
+  font: inherit;
+}
+
+.hero-reflection {
+  margin-top: -0.36em;
+  color: var(--accent);
+  transform: scaleY(-1);
+  -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.38) 0%, transparent 62%);
+  mask-image: linear-gradient(to top, rgb(0 0 0 / 0.38) 0%, transparent 62%);
+  filter: url(#fx-ripple-hero);
+  user-select: none;
+  pointer-events: none;
+}
+
+.dek {
+  max-width: 34rem;
+  margin: 0.5rem auto 0;
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.35rem);
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.byline {
+  margin: 1.5rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.scroll-cue::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 2.5rem;
+  margin: 0.75rem auto 0;
+  background: linear-gradient(var(--muted), transparent);
+  animation: cue 2.2s var(--ease) infinite;
+  transform-origin: top;
+}
+
+@keyframes cue {
+  0% { transform: scaleY(0); opacity: 1; }
+  60% { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   Scrolly layout: sticky poem on the left, steps on the right
+   -------------------------------------------------------------------------- */
+
+.scrolly {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: clamp(2rem, 6vw, 6rem);
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+}
+
+.poem-panel {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+.poem-scroller {
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 2rem 0 2rem 2.75rem;
+  scrollbar-width: none;
+}
+
+.poem-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.steps {
+  padding: 45vh 0 45vh;
+}
+
+.step {
+  max-width: 30rem;
+  margin: 0 0 70vh;
+  opacity: 0.25;
+  transition: opacity 0.5s var(--ease);
+}
+
+.step:last-child {
+  margin-bottom: 0;
+}
+
+.step.is-active {
+  opacity: 1;
+}
+
+.step p {
+  margin: 0 0 1em;
+}
+
+.step > :last-child {
+  margin-bottom: 0;
+}
+
+.step .kicker {
+  margin-bottom: 0.9rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.step figure {
+  margin: 0 0 1.25em;
+}
+
+.step figure img {
+  width: 100%;
+  border-radius: 3px;
+}
+
+.step figcaption {
+  margin-top: 0.6rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.pullquote {
+  margin: 0 0 1.1em;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent);
+  font-size: 1.45rem;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.step .fx-label {
+  display: inline-block;
+  margin: 1rem 0 0;
+  padding: 0.3rem 0.55rem;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.045);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.fx-label span {
+  opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   The poem
+   -------------------------------------------------------------------------- */
+
+.poem {
+  font-size: clamp(1rem, 0.55rem + 1.35vh, 1.32rem);
+  line-height: 1.62;
+}
+
+.poem-head {
+  margin-bottom: 1.8em;
+}
+
+.poem-title {
+  margin: 0;
+  font-size: 1.6em;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.poem-author {
+  margin: 0.7em 0 0;
+  font-family: var(--sans);
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.poem-head,
+.line {
+  transition: color 0.6s var(--ease), opacity 0.6s var(--ease), filter 0.6s var(--ease);
+}
+
+.stanza + .stanza {
+  margin-top: 1.2em;
+}
+
+.line {
+  position: relative;
+  padding-left: calc(var(--indent, 0) * 1ch);
+  color: var(--ink);
+}
+
+/* Line numbers in the gutter: faint every fifth line, accent on targeted lines. */
+.line .num {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  margin-right: 1.5em;
+  font-family: var(--sans);
+  font-size: 0.56em;
+  font-weight: 600;
+  line-height: calc(1.62em / 0.56);
+  font-variant-numeric: tabular-nums;
+  color: transparent;
+  transition: color 0.4s var(--ease);
+  user-select: none;
+}
+
+.line.is-marked .num {
+  color: var(--ink-dim);
+}
+
+.line.is-target .num {
+  color: var(--accent);
+}
+
+/* A line's text and any phrase inside it are the elements effects act on. */
+.line .text {
+  display: inline-block;
+  padding-left: 1em;
+  text-indent: -1em; /* hanging indent when a long line wraps */
+}
+
+.phrase {
+  display: inline-block;
+  text-indent: 0;
+}
+
+.line .text,
+.phrase {
+  position: relative;
+  isolation: isolate;
+  transform: perspective(40em) rotateY(0deg);
+  transition:
+    color 0.6s var(--ease),
+    opacity 0.9s var(--ease),
+    font-weight 0.5s var(--ease),
+    transform 0.9s var(--ease);
+}
+
+/* Highlight (::before) and underline (::after) layers, collapsed until used. */
+.line .text::before,
+.phrase::before,
+.line .text::after,
+.phrase::after {
+  content: "";
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.7s var(--ease);
+  pointer-events: none;
+}
+
+.line .text::before,
+.phrase::before {
+  inset: 0.14em -0.2em 0.06em;
+  z-index: -1;
+  border-radius: 0.12em;
+  background: var(--highlight);
+}
+
+.line .text::after,
+.phrase::after {
+  left: 0;
+  right: 0;
+  bottom: 0.08em;
+  height: max(1.5px, 0.07em);
+  background: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Effects
+   Line targets get .fx-NAME on the .line; phrase targets on the .phrase.
+   -------------------------------------------------------------------------- */
+
+/* focus — everything else fades back */
+.poem.has-focus .poem-head,
+.poem.has-focus .line {
+  color: var(--ink-dim);
+}
+
+.poem.has-focus .line.fx-focus,
+.poem.has-focus .phrase.fx-focus {
+  color: var(--ink);
+}
+
+/* blur — everything else goes out of focus */
+.poem.has-blur .poem-head,
+.poem.has-blur .line:not(.fx-blur, .fx-blur-within) {
+  filter: blur(2.5px);
+  opacity: 0.5;
+}
+
+/* bold */
+.fx-bold > .text,
+.phrase.fx-bold {
+  font-weight: 700;
+}
+
+/* accent — color shift */
+.fx-accent > .text,
+.phrase.fx-accent {
+  color: var(--accent);
+}
+
+/* highlight — marker sweep */
+.fx-highlight > .text::before,
+.phrase.fx-highlight::before {
+  transform: scaleX(1);
+}
+
+/* underline — rule draws in */
+.fx-underline > .text::after,
+.phrase.fx-underline::after {
+  transform: scaleX(1);
+}
+
+/* fade — nearly disappears */
+.fx-fade > .text,
+.phrase.fx-fade {
+  opacity: 0.14;
+}
+
+/* mirror — flips around like a reflection */
+.fx-mirror > .text,
+.phrase.fx-mirror {
+  transform: perspective(40em) rotateY(180deg);
+}
+
+/* shimmer — a silver sheen passes over the text */
+.fx-shimmer > .text,
+.fx-shimmer > .text .phrase,
+.phrase.fx-shimmer,
+.phrase.fx-shimmer .phrase {
+  background-image: linear-gradient(
+    105deg,
+    var(--silver-dark) 0%,
+    var(--silver-dark) 38%,
+    var(--silver-bright) 50%,
+    var(--silver-mid) 57%,
+    var(--silver-dark) 70%
+  );
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fx-shimmer 3.6s linear infinite;
+}
+
+@keyframes fx-shimmer {
+  0% { background-position: 100% 0; }
+  55%, 100% { background-position: 0% 0; }
+}
+
+/* ripple — water distortion (SVG filter #fx-ripple, eased in by scrolly.js) */
+.fx-ripple > .text,
+.phrase.fx-ripple {
+  filter: url(#fx-ripple);
+}
+
+/* shake — periodic agitation */
+.fx-shake > .text,
+.phrase.fx-shake {
+  animation: fx-shake 2.6s linear infinite;
+}
+
+@keyframes fx-shake {
+  0%, 32%, 100% { translate: 0 0; rotate: 0deg; }
+  4% { translate: -2px 0; rotate: -0.7deg; }
+  8% { translate: 2px -1px; rotate: 0.6deg; }
+  12% { translate: -2px 1px; rotate: -0.5deg; }
+  16% { translate: 2px 0; rotate: 0.4deg; }
+  20% { translate: -1px 0; rotate: -0.3deg; }
+  24% { translate: 1px 0; rotate: 0.2deg; }
+  28% { translate: -1px 0; rotate: 0deg; }
+}
+
+/* flicker — like a failing light */
+.fx-flicker > .text,
+.phrase.fx-flicker {
+  animation: fx-flicker 3.4s linear infinite;
+}
+
+@keyframes fx-flicker {
+  0%, 20%, 52%, 59%, 100% { opacity: 1; }
+  6% { opacity: 0.25; }
+  9% { opacity: 0.9; }
+  13% { opacity: 0.3; }
+  54% { opacity: 0.2; }
+  57% { opacity: 0.85; }
+}
+
+/* rise — surfaces from below, once */
+.fx-rise > .text,
+.phrase.fx-rise {
+  animation: fx-rise 2.2s var(--ease) both;
+}
+
+@keyframes fx-rise {
+  0% { translate: 0 0.9em; opacity: 0; filter: blur(4px); }
+  60% { opacity: 1; }
+  100% { translate: 0 0; opacity: 1; filter: blur(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Outro & footer
+   -------------------------------------------------------------------------- */
+
+.outro {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 10rem 1.5rem 4rem;
+}
+
+.outro h2 {
+  margin: 0 0 1.25rem;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.outro p {
+  margin: 0 0 1em;
+}
+
+.site-footer {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.noscript {
+  padding: 1rem;
+  text-align: center;
+  font-family: var(--sans);
+}
+
+/* --------------------------------------------------------------------------
+   Narrow screens: poem pinned to the top, analysis cards scroll beneath it
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 899px) {
+  body {
+    font-size: 17.5px;
+  }
+
+  .scrolly {
+    display: block;
+    padding: 0;
+  }
+
+  .poem-panel {
+    z-index: 5;
+    display: block;
+    height: 46vh;
+    height: 46svh;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: 0 12px 24px -20px rgb(0 0 0 / 0.4);
+  }
+
+  .poem-scroller {
+    height: 100%;
+    max-height: none;
+    padding: 1.1rem 16px 2rem 2.1rem;
+  }
+
+  .poem {
+    font-size: clamp(13.5px, 3.85vw, 16px);
+    line-height: 1.55;
+  }
+
+  .line .num {
+    margin-right: 1.1em;
+    line-height: calc(1.55em / 0.56);
+  }
+
+  .poem-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9em;
+    margin-bottom: 0.9em;
+  }
+
+  .poem-title {
+    font-size: 1.3em;
+  }
+
+  .poem-author {
+    margin: 0;
+  }
+
+  .steps {
+    padding: 22vh 16px 40vh;
+  }
+
+  .step {
+    margin: 0 auto 70vh;
+    max-width: 34rem;
+    padding: 1.2rem 1.25rem 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    background: var(--paper-raised);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 10px 28px -14px rgb(0 0 0 / 0.18);
+    opacity: 0.55;
+  }
+
+  .outro {
+    padding-top: 6rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: keep the static effects, drop the movement
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

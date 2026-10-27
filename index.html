@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mirror — A Close Reading</title>
+  <meta name="description" content="A scrolling, line-by-line close reading of Sylvia Plath's poem “Mirror.”">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-- Remove data-show-fx to hide the little "data-fx" labels under each step. -->
+<body data-show-fx>
+
+  <!-- SVG filters used by the "ripple" effect and the hero reflection. -->
+  <svg class="fx-defs" aria-hidden="true" focusable="false">
+    <filter id="fx-ripple" x="-5%" y="-40%" width="110%" height="180%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.09" numOctaves="2" seed="4" result="noise">
+        <animate attributeName="baseFrequency" dur="7s" values="0.01 0.09; 0.014 0.13; 0.01 0.09" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="fx-ripple-hero" x="-5%" y="-20%" width="110%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.06" numOctaves="2" seed="9">
+        <animate attributeName="baseFrequency" dur="9s" values="0.006 0.06; 0.009 0.085; 0.006 0.06" repeatCount="indefinite"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <header class="hero">
+    <p class="eyebrow">A Close Reading</p>
+    <div class="hero-mark">
+      <h1 class="hero-title">Mirror</h1>
+      <div class="hero-reflection" aria-hidden="true">Mirror</div>
+    </div>
+    <p class="dek">Lorem ipsum dolor sit amet, consectetur adipiscing elit. How Sylvia Plath’s eighteen lines turn a household object into something sed do eiusmod tempor.</p>
+    <p class="byline">By Lorem Ipsum &middot; Oct. 27, 2026</p>
+    <p class="scroll-cue" aria-hidden="true">Scroll</p>
+  </header>
+
+  <main class="scrolly">
+
+    <!-- ───────────── The poem (stays put while you scroll) ───────────── -->
+    <aside class="poem-panel" aria-label="The poem">
+      <div class="poem-scroller">
+        <article class="poem" data-poem>
+          <header class="poem-head">
+            <h2 class="poem-title">Mirror</h2>
+            <p class="poem-author">Sylvia Plath</p>
+          </header>
+          <div class="poem-body">
+            <!--
+              PLACEHOLDER LINES. Paste the poem here, one line per line, with a
+              blank line between stanzas. Line numbers in each step's data-fx
+              below are keyed to the real poem's 18 lines (two stanzas of nine).
+            -->
+            <script type="text/plain" class="poem-text">
+              Lorem ipsum dolor sit amet. Consectetur adipiscing elit.
+              Sed do eiusmod tempor incididunt
+              Ut labore et dolore, magna aliqua enim.
+              Ut enim ad minim veniam, quis nostrud—
+              Exercitation ullamco laboris, nisi ut aliquip.
+              Duis aute irure dolor in reprehenderit in voluptate.
+              Velit esse cillum, dolore eu fugiat. Nulla pariatur
+              Excepteur sint occaecat cupidatat. Sed non proident.
+              Sunt in culpa qui officia deserunt mollit anim.
+
+              Nam libero tempore, cum soluta nobis est eligendi,
+              Optio cumque nihil impedit quo minus id quod.
+              Temporibus autem quibusdam, et aut officiis debitis.
+              Itaque earum rerum hic tenetur a sapiente delectus.
+              Ut aut reiciendis voluptatibus maiores alias.
+              Nemo enim ipsam voluptatem. Quia voluptas sit.
+              Aspernatur aut odit aut fugit, sed quia consequuntur.
+              Magni dolores eos qui ratione, et in voluptatem sequi
+              Nesciunt neque porro quisquam, qui dolorem ipsum.
+            </script>
+          </div>
+        </article>
+      </div>
+    </aside>
+
+    <!-- ───────────── The analysis (scrolls past) ─────────────
+         data-fx = "effect [effect…]: target ; …"
+         targets: line numbers (3, 2-4, 1, 5), stanzas (s2), all,
+                  plus an optional quoted phrase inside those lines.
+         See README.md for the full list of effects. -->
+    <div class="steps">
+
+      <section class="step" data-fx="">
+        <p class="kicker">The poem</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cras mattis consectetur purus sit amet fermentum.</p>
+        <p>Donec ullamcorper nulla non metus auctor fringilla. Read it through once, then scroll on.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 1; shimmer: 1 'Lorem ipsum dolor'">
+        <p class="kicker">Line 1</p>
+        <p>Maecenas sed diam eget risus varius blandit sit amet non magna. Vestibulum id ligula porta felis euismod semper. Nullam quis risus eget urna mollis ornare vel eu leo.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 2-3; bold: 2 'incididunt'">
+        <p class="kicker">Lines 2–3</p>
+        <p>Aenean lacinia bibendum nulla sed consectetur. Curabitur blandit tempus porttitor. Donec sed odio dui, cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+        <p>Etiam porta sem malesuada magna mollis euismod.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 4-5; highlight: 4 'quis nostrud'; highlight: 5 'nisi ut aliquip'">
+        <p class="kicker">Lines 4–5</p>
+        <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 6-7; underline: 7 'dolore eu fugiat'">
+        <p class="kicker">Lines 6–7</p>
+        <figure>
+          <img src="images/mirror.svg" alt="Illustration of a rectangular silver mirror hanging on a speckled pink wall." width="800" height="560" loading="lazy">
+          <figcaption>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Image placeholder.</figcaption>
+        </figure>
+        <p>Nulla vitae elit libero, a pharetra augue. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 8; flicker: 8 'Sed non proident.'">
+        <p class="kicker">Line 8</p>
+        <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec id elit non mi porta gravida at eget metus. Sed posuere consectetur est at lobortis.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 9; accent: 9 'officia deserunt'">
+        <p class="kicker">Line 9</p>
+        <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Maecenas faucibus mollis interdum.</p>
+      </section>
+
+      <section class="step" data-fx="focus: s2">
+        <p class="kicker">Stanza two</p>
+        <blockquote class="pullquote">“Lorem ipsum dolor sit amet, consectetur adipiscing elit.”</blockquote>
+        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Nine lines answer nine lines; vestibulum id ligula porta felis euismod semper.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 10-11; ripple: 10-11">
+        <p class="kicker">Lines 10–11</p>
+        <figure>
+          <img src="images/lake.svg" alt="Illustration of a still lake at dusk with the moon reflected in rippling water." width="800" height="560" loading="lazy">
+          <figcaption>Fusce dapibus, tellus ac cursus commodo. Image placeholder.</figcaption>
+        </figure>
+        <p>Donec sed odio dui. Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum.</p>
+      </section>
+
+      <section class="step" data-fx="blur: 12; accent: 12 'officiis debitis'">
+        <p class="kicker">Line 12</p>
+        <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 13; mirror: 13">
+        <p class="kicker">Line 13</p>
+        <p>Etiam porta sem malesuada magna mollis euismod. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 14; shake: 14 'voluptatibus maiores'">
+        <p class="kicker">Line 14</p>
+        <p>Vestibulum id ligula porta felis euismod semper. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 15-16; bold: 16 'sed quia consequuntur'">
+        <p class="kicker">Lines 15–16</p>
+        <p>Curabitur blandit tempus porttitor. Nullam quis risus eget urna mollis ornare vel eu leo. Donec ullamcorper nulla non metus auctor fringilla.</p>
+      </section>
+
+      <section class="step" data-fx="focus: 17-18; fade: 17 'Magni dolores'; rise: 18">
+        <p class="kicker">Lines 17–18</p>
+        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Aenean lacinia bibendum nulla sed consectetur. Duis mollis, est non commodo luctus, nisi erat porttitor ligula.</p>
+        <p>Sed posuere consectetur est at lobortis.</p>
+      </section>
+
+      <section class="step" data-fx="">
+        <p class="kicker">Read it again</p>
+        <p>Maecenas faucibus mollis interdum. Donec id elit non mi porta gravida at eget metus. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <section class="outro">
+    <h2>Lorem ipsum dolor</h2>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+    <p>Donec sed odio dui. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+  </section>
+
+  <footer class="site-footer">
+    <p>Poem: “Mirror” by Sylvia Plath (1961). Analysis text is placeholder.</p>
+  </footer>
+
+  <noscript><p class="noscript">This page needs JavaScript to display the poem.</p></noscript>
+  <script src="js/scrolly.js"></script>
+</body>
+</html>
