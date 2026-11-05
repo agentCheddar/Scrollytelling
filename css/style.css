@@ -107,16 +107,8 @@ img {
   pointer-events: none;
 }
 
-.dek {
-  max-width: 34rem;
-  margin: 0.5rem auto 0;
-  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.35rem);
-  line-height: 1.45;
-  color: var(--ink-soft);
-}
-
 .byline {
-  margin: 1.5rem 0 0;
+  margin: 0.75rem 0 0;
   font-family: var(--sans);
   font-size: 0.8rem;
   letter-spacing: 0.02em;
@@ -378,7 +370,7 @@ img {
 
 .line .text::before,
 .phrase::before {
-  inset: 0.14em -0.2em 0.06em;
+  inset: 0.14em -0.1em 0.06em;
   z-index: -1;
   border-radius: 0.12em;
   background: var(--highlight);

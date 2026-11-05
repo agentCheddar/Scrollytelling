@@ -26,9 +26,10 @@ Paste the poem into the `<script type="text/plain" class="poem-text">` block in
 Leading indentation is kept. Lines are numbered automatically.
 
 "Mirror" is still under copyright, so this repo doesn't include its text. Use the text
-from your own licensed copy. The line numbers in the example steps already match the
-real poem's 18 lines (two stanzas of nine). Only the quoted phrases need changing to
-the poem's actual words.
+from your own licensed copy. Each placeholder line has the same number of words as the
+real line. The stops point at words by position (`5:2-6`), so once the poem is pasted
+in, every highlight lands on the words its comment was about. No other changes are
+needed.
 
 ## Write the analysis
 
@@ -50,13 +51,18 @@ the poem while that step is active:
 | `2-4`, `1, 5`   | a range or a list of lines                                |
 | `s2`            | every line of stanza 2                                    |
 | `all`           | the whole poem                                            |
+| `5:2-6`, `1:5`  | words 2–6 of line 5, or word 5 of line 1                  |
 | `3 'some words'` | just that phrase inside line 3                           |
 | `'some words'`  | that phrase wherever it appears                           |
 
+Words are counted by the spaces between them, so "four-cornered." is one word.
+Punctuation at either end of a word range isn't highlighted.
+
 Phrases can be quoted with `'…'`, `"…"` or `“…”`. Matching ignores case and curly
-vs. straight apostrophes. If a phrase includes an apostrophe, quote it with `“…”`. If
-a phrase isn't found, the effect falls back to the whole line. A warning about it
-shows up in the browser console.
+vs. straight apostrophes. If a phrase includes an apostrophe, quote it with `“…”`.
+
+If a phrase isn't found or a word range runs past the end of its line, the effect falls
+back to the whole line. A warning about it shows up in the browser console.
 
 An empty `data-fx=""` clears all effects, which suits an intro or outro step.
 
@@ -95,5 +101,5 @@ Users with "reduce motion" turned on still get the static effects, but not the m
 To add an effect, add its name to `EFFECTS` in `js/scrolly.js`. Then style
 `.fx-NAME > .text` (whole lines) and `.phrase.fx-NAME` (phrases) in the CSS.
 
-Remove `data-show-fx` from `<body>` to hide the small `data-fx` labels shown under
-each step.
+To see what each step is doing while you write, add `data-show-fx` to `<body>`.
+That shows each step's `data-fx` value in a small label under it.

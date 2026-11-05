@@ -9,6 +9,7 @@
  *
  * data-fx syntax:  effect [effect…]: target ; effect: target ; …
  *   target   line numbers ("3", "2-4", "1, 5"), stanzas ("s2"), "all",
+ *            word positions in a line ("5:2-6" = words 2–6 of line 5),
  *            and/or a quoted phrase ('…', "…" or “…”) to find inside those lines
  */
 (function () {
@@ -24,6 +25,9 @@
   // Opening → closing quote characters around a phrase in data-fx.
   const QUOTES = { '"': '"', "'": "'", '“': '”' };
   const PHRASE = /"([^"]*)"|'([^']*)'|“([^”]*)”/g;
+  // Punctuation trimmed off the ends of a word-position target.
+  const LEADING_PUNCT = /["'“‘(\[]/;
+  const TRAILING_PUNCT = /[.,;:!?"'”’)\]‚—–-]/;
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const narrow = window.matchMedia('(max-width: 899px)');
@@ -148,12 +152,16 @@
       .replace(/\s*[-–]\s*/g, '-');
 
     let scope = [];
+    const wordRanges = []; // [line, first word, last word]
     for (const token of rest.split(/[\s,]+/).filter(Boolean)) {
       let m;
       if (token.toLowerCase() === 'all') {
         scope.push(...lines);
       } else if ((m = token.match(/^s(?:tanza)?(\d+)$/i))) {
         scope.push(...(stanzas[m[1] - 1] || []));
+      } else if ((m = token.match(/^(\d+):(\d+)(?:-(\d+))?$/))) {
+        if (lines[m[1] - 1]) wordRanges.push([lines[m[1] - 1], +m[2], +(m[3] || m[2])]);
+        else warn(`step ${stepNumber}: there is no line ${m[1]}`);
       } else if ((m = token.match(/^(\d+)(?:-(\d+))?$/))) {
         for (let n = +m[1]; n <= +(m[2] || m[1]); n++) {
           if (lines[n - 1]) scope.push(lines[n - 1]);
@@ -165,9 +173,12 @@
 
     const explicit = scope.length > 0;
     scope = explicit ? [...new Set(scope)] : lines;
-    if (!phrases.length) return scope;
 
     const found = [];
+    if (!phrases.length) {
+      // Bare word positions target only those words, not the whole poem.
+      if (explicit || !wordRanges.length) found.push(...scope);
+    }
     for (const phrase of phrases) {
       const hits = scope.map((line) => wrapPhrase(line.querySelector('.text'), phrase)).filter(Boolean);
       if (hits.length) {
@@ -176,6 +187,9 @@
         warn(`step ${stepNumber}: phrase "${phrase}" not found${explicit ? '; using the whole line instead' : ''}`);
         if (explicit) found.push(...scope);
       }
+    }
+    for (const [line, first, last] of wordRanges) {
+      found.push(wrapWords(line, first, last, stepNumber) || line);
     }
     return [...new Set(found)];
   }
@@ -186,20 +200,40 @@
   }
 
   // Wrap the first occurrence of `phrase` in a <span class="phrase">.
-  // Phrases may nest inside each other but not partially overlap.
   function wrapPhrase(textEl, phrase) {
     const needle = normalize(phrase.trim());
     if (!needle) return null;
-    const existing = Array.from(textEl.querySelectorAll('.phrase')).find(
-      (span) => normalize(span.textContent) === needle,
-    );
-    if (existing) return existing;
-
     const start = normalize(textEl.textContent).indexOf(needle);
     if (start < 0) return null;
+    return wrapRange(textEl, start, start + needle.length);
+  }
+
+  // Wrap words `first`–`last` (1-based) of a line, minus punctuation at the ends.
+  function wrapWords(line, first, last, stepNumber) {
+    const textEl = line.querySelector('.text');
+    const text = textEl.textContent;
+    const words = Array.from(text.matchAll(/\S+/g));
+    if (first < 1 || last < first || last > words.length) {
+      warn(`step ${stepNumber}: line ${line.dataset.line} has ${words.length} words, so it has no words ${first}-${last}; using the whole line instead`);
+      return null;
+    }
+    let start = words[first - 1].index;
+    let end = words[last - 1].index + words[last - 1][0].length;
+    while (start < end && LEADING_PUNCT.test(text[start])) start++;
+    while (end > start && TRAILING_PUNCT.test(text[end - 1])) end--;
+    return wrapRange(textEl, start, end);
+  }
+
+  // Wrap characters [start, end) of a line's text in a <span class="phrase">,
+  // reusing a span that already covers exactly that range. Ranges may nest
+  // inside each other but not partially overlap.
+  function wrapRange(textEl, start, end) {
+    for (const span of textEl.querySelectorAll('.phrase')) {
+      if (offsetOf(textEl, span) === start && span.textContent.length === end - start) return span;
+    }
 
     const [startNode, startOffset] = locate(textEl, start, 'start');
-    const [endNode, endOffset] = locate(textEl, start + needle.length, 'end');
+    const [endNode, endOffset] = locate(textEl, end, 'end');
     // Try the tight range first. If that cuts through an existing phrase that
     // sits flush against the new one's edge, widen the range to take it in.
     for (const widen of [false, true]) {
@@ -218,8 +252,15 @@
         // partially overlaps another phrase; try the wider range
       }
     }
-    warn(`phrase "${phrase}" overlaps another phrase in line ${textEl.parentNode.dataset.line}`);
+    warn(`"${textEl.textContent.slice(start, end)}" overlaps another phrase in line ${textEl.parentNode.dataset.line}`);
     return null;
+  }
+
+  function offsetOf(root, node) {
+    const range = document.createRange();
+    range.setStart(root, 0);
+    range.setEndBefore(node);
+    return range.toString().length;
   }
 
   function locate(root, offset, edge) {
