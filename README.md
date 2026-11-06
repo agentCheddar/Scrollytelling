@@ -10,11 +10,14 @@ text for now.
 
 ## Run it
 
-Open `index.html` in a browser, or serve the folder:
+Serve the folder, then open http://localhost:8417:
 
 ```bash
-python3 -m http.server 8417
+python3 serve.py
 ```
+
+`serve.py` turns off browser caching. With a plain server like `python3 -m http.server`,
+Chrome can keep using an old copy of the CSS or JS after you edit it.
 
 On narrow screens the poem pins to the top half of the screen. It scrolls itself to
 whichever lines the current paragraph is about, and the analysis cards scroll beneath it.
@@ -91,12 +94,37 @@ with `rise` (both filter).
 
 Users with "reduce motion" turned on still get the static effects, but not the movement.
 
+## Scenes
+
+Add `data-scene="lake"` to a step to fade the whole page to navy with white text from
+that step on. The lake stop at line 10 does this, so all of stanza two is navy. The page
+stays navy for every later step until one sets a different scene. Set `data-scene=""`
+to go back to the normal colors. The navy colors are under `body[data-scene="lake"]`
+in `css/style.css`. Add another block like it to make a new scene.
+
+## Show an image instead of the poem
+
+Put a `<figure class="panel-figure">` inside a step. While that step is active, the
+poem fades out on the left and the figure fades in where it was. The Historical Context
+stop uses this for the photo of Plath:
+
+```html
+<figure class="panel-figure">
+  <img src="images/plath.jpeg" alt="Sylvia Plath">
+  <figcaption>Sylvia Plath</figcaption>
+</figure>
+```
+
+If the image can't be found, the poem stays visible and the browser console says which
+file is missing. On a Mac, create the `images` folder first and put the photo inside it.
+Don't name a file `images/photo.jpg` in Finder, because Finder saves that as a single
+file called `images:photo.jpg`.
+
 ## Files
 
 - `index.html`: content (hero, poem, steps, outro)
 - `css/style.css`: layout, typography, and every effect (search for `Effects`)
 - `js/scrolly.js`: builds the poem, parses `data-fx`, and tracks scroll position
-- `images/`: placeholder illustrations
 
 To add an effect, add its name to `EFFECTS` in `js/scrolly.js`. Then style
 `.fx-NAME > .text` (whole lines) and `.phrase.fx-NAME` (phrases) in the CSS.

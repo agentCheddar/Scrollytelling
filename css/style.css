@@ -22,6 +22,19 @@
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Night lake: a step with data-scene="lake" turns the page navy (see scrolly.js). */
+body[data-scene="lake"] {
+  --paper: #0e1b33;
+  --paper-raised: #16284a;
+  --ink: #f4f7fb;
+  --ink-soft: #c9d3e3;
+  --ink-dim: #45577a;
+  --muted: #8fa1bd;
+  --rule: #24375b;
+  --accent: #8fc3f0;
+  --highlight: #2b5a8c;
+}
+
 *,
 *::before,
 *::after {
@@ -41,6 +54,7 @@ body {
   line-height: 1.6;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.9s var(--ease), color 0.9s var(--ease);
 }
 
 img {
@@ -176,10 +190,58 @@ img {
   overflow-y: auto;
   padding: 2rem 0 2rem 2.75rem;
   scrollbar-width: none;
+  transition: opacity 0.7s var(--ease);
 }
 
 .poem-scroller::-webkit-scrollbar {
   display: none;
+}
+
+/* A step's .panel-figure takes the poem's place while that step is active. */
+.poem-panel.shows-figure .poem-scroller {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panel-media {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.panel-figure {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 2rem 0 2rem 2.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease);
+}
+
+.panel-figure.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.panel-figure img {
+  width: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 9rem);
+  max-height: calc(100svh - 9rem);
+  border-radius: 3px;
+}
+
+.panel-figure figcaption {
+  margin-top: 0.75rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--muted);
 }
 
 .steps {
@@ -190,7 +252,10 @@ img {
   max-width: 30rem;
   margin: 0 0 70vh;
   opacity: 0.25;
-  transition: opacity 0.5s var(--ease);
+  transition:
+    opacity 0.5s var(--ease),
+    background-color 0.9s var(--ease),
+    border-color 0.9s var(--ease);
 }
 
 .step:last-child {
@@ -217,6 +282,7 @@ img {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
+  transition: color 0.9s var(--ease);
 }
 
 .step figure {
@@ -290,6 +356,7 @@ img {
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--muted);
+  transition: color 0.9s var(--ease);
 }
 
 .poem-head,
@@ -374,6 +441,7 @@ img {
   z-index: -1;
   border-radius: 0.12em;
   background: var(--highlight);
+  transition: transform 0.7s var(--ease), background-color 0.9s var(--ease);
 }
 
 .line .text::after,
@@ -582,12 +650,23 @@ img {
     background: var(--paper);
     border-bottom: 1px solid var(--rule);
     box-shadow: 0 12px 24px -20px rgb(0 0 0 / 0.4);
+    transition: background-color 0.9s var(--ease), border-color 0.9s var(--ease);
   }
 
   .poem-scroller {
     height: 100%;
     max-height: none;
     padding: 1.1rem 16px 2rem 2.1rem;
+  }
+
+  .panel-figure {
+    padding: 1rem 16px;
+    align-items: center;
+  }
+
+  .panel-figure img {
+    max-height: calc(46vh - 4.5rem);
+    max-height: calc(46svh - 4.5rem);
   }
 
   .poem {

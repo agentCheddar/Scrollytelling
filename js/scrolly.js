@@ -44,6 +44,40 @@
     rules: parseFx(el.dataset.fx || '', i + 1),
   }));
 
+  // A step's data-scene (e.g. "lake") themes the page from that step on,
+  // until a later step sets another one (data-scene="" goes back to normal).
+  let scene = '';
+  for (const step of steps) {
+    if (step.el.hasAttribute('data-scene')) scene = step.el.dataset.scene;
+    step.scene = scene;
+  }
+
+  // A <figure class="panel-figure"> in a step takes the poem's place on the
+  // left while that step is active. If its image fails to load, the poem stays.
+  const panelMedia = document.createElement('div');
+  panelMedia.className = 'panel-media';
+  panel.append(panelMedia);
+  for (const step of steps) {
+    const figure = step.el.querySelector('.panel-figure');
+    if (!figure) continue;
+    step.figure = figure;
+    panelMedia.append(figure);
+    const img = figure.querySelector('img');
+    const drop = () => {
+      warn(`image "${img.getAttribute('src')}" didn't load; showing the poem instead`);
+      step.figure = null;
+      figure.remove();
+    };
+    if (img && img.complete && !img.naturalWidth) {
+      drop();
+    } else {
+      img?.addEventListener('error', () => {
+        drop();
+        showFigure();
+      }, { once: true });
+    }
+  }
+
   if (document.body.hasAttribute('data-show-fx')) {
     for (const { el } of steps) {
       const label = document.createElement('p');
@@ -294,6 +328,11 @@
     activeIndex = index;
     steps.forEach((step, i) => step.el.classList.toggle('is-active', i === index));
 
+    const scene = index >= 0 ? steps[index].scene : '';
+    if (scene) document.body.dataset.scene = scene;
+    else delete document.body.dataset.scene;
+    showFigure();
+
     for (const [el, cls] of applied) el.classList.remove(cls);
     applied = [];
     const add = (el, cls) => {
@@ -316,6 +355,12 @@
 
     setRipple(rules.some((rule) => rule.effects.includes('ripple')));
     revealTargets();
+  }
+
+  function showFigure() {
+    const figure = steps[activeIndex]?.figure || null;
+    for (const step of steps) step.figure?.classList.toggle('is-shown', step.figure === figure);
+    panel.classList.toggle('shows-figure', figure !== null);
   }
 
   // Ease the ripple filter's displacement in rather than snapping it on.
